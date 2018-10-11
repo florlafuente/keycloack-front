@@ -18,13 +18,12 @@ export default class extends Component {
     authenticated: false
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     Keycloak = require('keycloak-js');
-    const keycloak = Keycloak(this.props.keycloak)
-    keycloak.init({onLoad: 'login-required'}).then(authenticated => {
-      console.log(authenticated)
-      //this.setState({ keycloak: keycloak, authenticated: authenticated })
-    }, () => console.log(this.state))
+    const keycloak = await Keycloak(this.props.keycloak)
+    this.setState({
+      keycloak
+    }, () => console.log(this.state.keycloak))
   }
 
   render () {
