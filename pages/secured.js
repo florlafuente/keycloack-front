@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 
 let Keycloak;
 const json = import('../json/keycloak.json')
@@ -21,11 +20,17 @@ export default class extends Component {
   async componentDidMount () {
     Keycloak = require('keycloak-js');
     const keycloak = await Keycloak(this.props.keycloak)
-    const auth = await keycloak.init({ onLoad: 'login-required'})
-    console.log(auth)
-    this.setState({
-      keycloak
-    }, () => console.log(this.state.keycloak))
+    try {
+    const authenticated = await keycloak.init({ onLoad: 'check-sso' })
+      this.setState({
+        keycloak, authenticated
+      })
+    } catch (err) {
+      console.error(err)
+      this.setState({
+        authenticated: false
+      })
+    }
   }
 
   render () {
